@@ -73,7 +73,7 @@ jobs:
       - run:
           name: Copy deployment artifacts to workspace
           command: |
-            cp doc-server/ /tmp/server-doc -r
+            cp dist/ /tmp/server-doc -r
       - store_artifacts:
           path: /tmp/server-doc
       - persist_to_workspace:
