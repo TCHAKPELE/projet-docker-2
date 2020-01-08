@@ -69,7 +69,7 @@ jobs:
       - checkout
       - restore_cache:
           key: dependencies-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
-      - run: yarn dist:build
+      - run: yarn doc:build
       - run:
           name: Copy deployment artifacts to workspace
           command: |
@@ -108,6 +108,12 @@ workflows:
           requires:
             - install
             - build
+          filters:
+            branches:
+              only: master
       - deploy-netlify:
           requires:
             - server-doc-build
+          filters:
+            branches:
+              only: master
