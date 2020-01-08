@@ -69,29 +69,29 @@ jobs:
       - checkout
       - restore_cache:
           key: dependencies-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
-      - run: yarn doc:build
+      - run: yarn dist:build
       - run:
           name: Copy deployment artifacts to workspace
           command: |
-            cp dist/ /tmp/server-doc -r
+            cp dist-server/ /tmp/server-dist -r
       - store_artifacts:
-          path: /tmp/server-doc
+          path: /tmp/server-dist
       - persist_to_workspace:
           root: /tmp
           paths:
-            - server-doc
+            - server-dist
 
   deploy-netlify:
     docker:
       - image: circleci/node:10-browsers
-    working_directory: ~/deploy-doc-server
+    working_directory: ~/deploy-dist-server
     steps:
       - attach_workspace:
           at: /tmp
       - run:
           name: Deploy app
           command: |
-            npx netlify-cli deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --dir /tmp/server-doc --prod
+            npx netlify-cli deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --dir /tmp/server-dist --prod
 
 workflows:
   version: 2
