@@ -60,6 +60,18 @@ jobs:
             API_HOST: localhost
             API_PROTOCOL: http
 
+  deploy-netlify:
+    docker:
+      - image: circleci/node:10-browsers
+    working_directory: ~/deploy-doc-server
+    steps:
+      - attach_workspace:
+          at: /tmp
+      - run:
+          name: Deploy app
+          command: |
+            npx netlify-cli deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --dir /tmp/server-doc --prod
+
 workflows:
   version: 2
   build-test-and-lint2:
@@ -69,5 +81,8 @@ workflows:
           requires:
             - build
       - test-e2e:
+          requires:
+            - install
+      - deploy-netlify:
           requires:
             - install
