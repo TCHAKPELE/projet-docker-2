@@ -60,6 +60,27 @@ jobs:
             API_HOST: localhost
             API_PROTOCOL: http
 
+
+  server-doc-build:
+    docker:
+      - image: circleci/node:10-browsers
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependencies-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
+      - run: yarn doc:build
+      - run:
+          name: Copy deployment artifacts to workspace
+          command: |
+            cp doc-server/ /tmp/server-doc -r
+      - store_artifacts:
+          path: /tmp/server-doc
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - server-doc
+
   deploy-netlify:
     docker:
       - image: circleci/node:10-browsers
@@ -83,6 +104,9 @@ workflows:
       - test-e2e:
           requires:
             - install
-      - deploy-netlify:
+      - server-doc-build:
           requires:
             - install
+      - deploy-netlify:
+          requires:
+            - server-doc-build
