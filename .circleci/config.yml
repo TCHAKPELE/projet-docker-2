@@ -107,6 +107,7 @@ workflows:
       - server-doc-build:
           requires:
             - install
+            - build
       - deploy-netlify:
           requires:
             - server-doc-build
