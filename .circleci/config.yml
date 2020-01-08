@@ -52,7 +52,7 @@ jobs:
       - restore_cache:
           key: dependencies-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
       - run:
-          command: yarn test:e2e
+          command: yarn e2e
           environment:
             DATABASE_URL: postgres://psqluer:psqlpassword@localhost:5432/psqluer
             JWT_SECRET: aaaa
